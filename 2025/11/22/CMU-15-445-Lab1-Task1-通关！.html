@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xdcccccccccccc.github.io/img/%E5%A4%B4%E5%83%8F.png">
 <meta property="article:published_time" content="2025-11-22T13:51:19.000Z">
-<meta property="article:modified_time" content="2025-11-22T14:47:24.144Z">
+<meta property="article:modified_time" content="2025-11-22T14:51:50.060Z">
 <meta property="article:author" content="xdcccccccccccc">
 <meta property="article:tag" content="Bustub">
 <meta property="article:tag" content="C++">
@@ -21,7 +21,7 @@
   "url": "https://xdcccccccccccc.github.io/2025/11/22/CMU-15-445-Lab1-Task1-%E9%80%9A%E5%85%B3%EF%BC%81.html",
   "image": "https://xdcccccccccccc.github.io/img/%E5%A4%B4%E5%83%8F.png",
   "datePublished": "2025-11-22T13:51:19.000Z",
-  "dateModified": "2025-11-22T14:47:24.144Z",
+  "dateModified": "2025-11-22T14:51:50.060Z",
   "author": [
     {
       "@type": "Person",
@@ -162,7 +162,7 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/xdccc-blog/"><span class="site-name">xdccc的博客</span></a><a class="nav-page-title" href="/xdccc-blog/"><span class="site-name">CMU 15-445 Lab1 Task1 通关！</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">CMU 15-445 Lab1 Task1 通关！</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-22T13:51:19.000Z" title="发表于 2025-11-22 21:51:19">2025-11-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-22T14:47:24.144Z" title="更新于 2025-11-22 22:47:24">2025-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/xdccc-blog/categories/CMU-15445/">CMU-15445</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="CMU-15-445-Lab1-Task1-通关记：从0实现ARC替换算法"><a href="#CMU-15-445-Lab1-Task1-通关记：从0实现ARC替换算法" class="headerlink" title="CMU 15-445 Lab1 Task1 通关记：从0实现ARC替换算法"></a>CMU 15-445 Lab1 Task1 通关记：从0实现ARC替换算法</h1><h2 id="📅-项目信息"><a href="#📅-项目信息" class="headerlink" title="📅 项目信息"></a>📅 项目信息</h2><ul>
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/xdccc-blog/"><span class="site-name">xdccc的博客</span></a><a class="nav-page-title" href="/xdccc-blog/"><span class="site-name">CMU 15-445 Lab1 Task1 通关！</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">CMU 15-445 Lab1 Task1 通关！</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-22T13:51:19.000Z" title="发表于 2025-11-22 21:51:19">2025-11-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-22T14:51:50.060Z" title="更新于 2025-11-22 22:51:50">2025-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/xdccc-blog/categories/CMU-15445/">CMU-15445</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="CMU-15-445-Lab1-Task1-通关记：从0实现ARC替换算法"><a href="#CMU-15-445-Lab1-Task1-通关记：从0实现ARC替换算法" class="headerlink" title="CMU 15-445 Lab1 Task1 通关记：从0实现ARC替换算法"></a>CMU 15-445 Lab1 Task1 通关记：从0实现ARC替换算法</h1><h2 id="📅-项目信息"><a href="#📅-项目信息" class="headerlink" title="📅 项目信息"></a>📅 项目信息</h2><ul>
 <li><strong>课程</strong>：CMU 15-445 Database Systems  </li>
 <li><strong>实验</strong>：Lab1 - Buffer Pool Manager</li>
 <li><strong>任务</strong>：Task1 - ARC页面替换算法实现</li>
@@ -186,7 +186,7 @@
 <ul>
 <li><strong>mru&#x2F;mfu</strong> 放在我床前的零食（在缓存中）</li>
 <li><strong>B1&#x2F;B2</strong> 床头比较小，部分放在卧室门口的零食 （缓存的记忆）</li>
-<li><strong>参数target_size_</strong> 调整我放在两个</li>
+<li><strong>参数target_size_</strong> 调整我放在两个位置的比例</li>
 </ul>
 <h2 id="💻-实现过程"><a href="#💻-实现过程" class="headerlink" title="💻 实现过程"></a>💻 实现过程</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回当前可淘汰的帧数量</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">Size</span><span class="params">()</span> -&gt; <span class="type">size_t</span></span>;</span><br></pre></td></tr></table></figure>
 
