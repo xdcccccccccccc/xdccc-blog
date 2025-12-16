@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CMU 15-445 Lab3 Task2&amp;Task3 通关！ | xdccc的博客</title><meta name="author" content="xdcccccccccccc"><meta name="copyright" content="xdcccccccccccc"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CMU 15-445 Lab3 Task2&amp;Task3 通关，实现基本执行器和 IndexScan 优化器📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab3 - Query Execution 任务：Task2 - Aggregation &amp; Join Executors，Task3 - HashJoin Executor and Op">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMU 15-445 Lab3 Task2&amp;Task3 通关！">
+<meta property="og:url" content="https://xdcccccccccccc.github.io/2025/12/16/CMU-15-445-Lab3-Task2-Task3-%E9%80%9A%E5%85%B3%EF%BC%81.html">
+<meta property="og:site_name" content="xdccc的博客">
+<meta property="og:description" content="CMU 15-445 Lab3 Task2&amp;Task3 通关，实现基本执行器和 IndexScan 优化器📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab3 - Query Execution 任务：Task2 - Aggregation &amp; Join Executors，Task3 - HashJoin Executor and Op">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xdcccccccccccc.github.io/img/%E5%A4%B4%E5%83%8F.png">
+<meta property="article:published_time" content="2025-12-16T10:02:39.000Z">
+<meta property="article:modified_time" content="2025-12-16T11:31:51.251Z">
+<meta property="article:author" content="xdcccccccccccc">
+<meta property="article:tag" content="Bustub">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="CMU-15445">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xdcccccccccccc.github.io/img/%E5%A4%B4%E5%83%8F.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CMU 15-445 Lab3 Task2&Task3 通关！",
+  "url": "https://xdcccccccccccc.github.io/2025/12/16/CMU-15-445-Lab3-Task2-Task3-%E9%80%9A%E5%85%B3%EF%BC%81.html",
+  "image": "https://xdcccccccccccc.github.io/img/%E5%A4%B4%E5%83%8F.png",
+  "datePublished": "2025-12-16T10:02:39.000Z",
+  "dateModified": "2025-12-16T11:31:51.251Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xdcccccccccccc",
+      "url": "https://github.com/xdcccccccccccc"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/xdccc-blog/img/favicon.png"><link rel="canonical" href="https://xdcccccccccccc.github.io/2025/12/16/CMU-15-445-Lab3-Task2-Task3-%E9%80%9A%E5%85%B3%EF%BC%81.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/xdccc-blog/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/xdccc-blog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CMU 15-445 Lab3 Task2&Task3 通关！',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/xdccc-blog/"><span class="site-name">xdccc的博客</span></a><a class="nav-page-title" href="/xdccc-blog/"><span class="site-name">CMU 15-445 Lab3 Task2&amp;Task3 通关！</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">CMU 15-445 Lab3 Task2&amp;Task3 通关！</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-12-16T10:02:39.000Z" title="发表于 2025-12-16 18:02:39">2025-12-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-12-16T11:31:51.251Z" title="更新于 2025-12-16 19:31:51">2025-12-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/xdccc-blog/categories/CMU-15445/">CMU-15445</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="CMU-15-445-Lab3-Task2-Task3-通关，实现基本执行器和-IndexScan-优化器"><a href="#CMU-15-445-Lab3-Task2-Task3-通关，实现基本执行器和-IndexScan-优化器" class="headerlink" title="CMU 15-445 Lab3 Task2&amp;Task3 通关，实现基本执行器和 IndexScan 优化器"></a>CMU 15-445 Lab3 Task2&amp;Task3 通关，实现基本执行器和 IndexScan 优化器</h1><h2 id="📅-项目信息"><a href="#📅-项目信息" class="headerlink" title="📅 项目信息"></a>📅 项目信息</h2><ul>
+<li><strong>课程</strong>：CMU 15-445 Database Systems  </li>
+<li><strong>实验</strong>：Lab3 - Query Execution</li>
+<li><strong>任务</strong>：Task2 - Aggregation &amp; Join Executors，Task3 - HashJoin Executor and Optimization</li>
+<li><strong>耗时</strong>：4 天</li>
+<li><strong>状态</strong>：本地全测试通过</li>
+<li><strong>代码分支</strong>：<code>lab3-Task3-HashJoin-Executor-and-Optimization</code></li>
+</ul>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Task3 的代码量非常大，需要对项目框架有充分的理解</p>
+<h2 id="核心任务"><a href="#核心任务" class="headerlink" title="核心任务"></a>核心任务</h2><ol>
+<li>实现聚合执行器</li>
+<li>实现索引等值连接执行器</li>
+<li>实现哈希等值连接的执行器和优化器</li>
+</ol>
+<h2 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h2><h3 id="聚合执行器（Aggregation）"><a href="#聚合执行器（Aggregation）" class="headerlink" title="聚合执行器（Aggregation）"></a>聚合执行器（Aggregation）</h3><p>聚合执行器需要支持以下的 sql 语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN <span class="keyword">SELECT</span> colA, <span class="built_in">MIN</span>(colB) <span class="keyword">FROM</span> __mock_table_1 <span class="keyword">GROUP</span> <span class="keyword">BY</span> colA;</span><br><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(colA), <span class="built_in">min</span>(colB) <span class="keyword">FROM</span> __mock_table_1;</span><br><span class="line">EXPLAIN <span class="keyword">SELECT</span> colA, <span class="built_in">MIN</span>(colB) <span class="keyword">FROM</span> __mock_table_1 <span class="keyword">GROUP</span> <span class="keyword">BY</span> colA <span class="keyword">HAVING</span> <span class="built_in">MAX</span>(colB) <span class="operator">&gt;</span> <span class="number">10</span>;</span><br><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> colA, colB <span class="keyword">FROM</span> __mock_table_1;</span><br></pre></td></tr></table></figure>
+
+<p>聚合 &#x3D; 把多行数据”聚”成单行，再进行”合”并计算。​ 类似Excel的数据透视表。</p>
+<p>对于这个执行器的实现非常简单，因为官方已经帮我们封装好了一个哈希表，所以只需要关注执行器本身的逻辑即可。</p>
+<p>在 <code>Init</code> 函数中通过子执行器获取所有的元组，然后生成对应的键值，合并到哈希表中即可</p>
+<p>在 <code>Next</code> 函数中通过哈希表的迭代器获取每个类别的信息。</p>
+<h3 id="嵌套循环连接（NestedLoopJoin）"><a href="#嵌套循环连接（NestedLoopJoin）" class="headerlink" title="嵌套循环连接（NestedLoopJoin）"></a>嵌套循环连接（NestedLoopJoin）</h3><p>此执行器需要支持以下的 sql 语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> __mock_table_1, __mock_table_3 <span class="keyword">WHERE</span> colA <span class="operator">=</span> colE;</span><br><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> __mock_table_1 <span class="keyword">INNER</span> <span class="keyword">JOIN</span> __mock_table_3 <span class="keyword">ON</span> colA <span class="operator">=</span> colE;</span><br><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> __mock_table_1 <span class="keyword">LEFT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> __mock_table_3 <span class="keyword">ON</span> colA <span class="operator">=</span> colE;</span><br></pre></td></tr></table></figure>
+
+<p>连接 &#x3D; 将多个表中的数据按照某种关联谓词组合在一起，形成新的结果集。</p>
+<p>这里只需要嵌套两层循环就行了，没什么难度。</p>
+<h3 id="嵌套索引连接（NestedIndexJoin）"><a href="#嵌套索引连接（NestedIndexJoin）" class="headerlink" title="嵌套索引连接（NestedIndexJoin）"></a>嵌套索引连接（NestedIndexJoin）</h3><p>此执行器需要支持以下的 sql 语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> t1(v1 <span class="type">int</span>, v2 <span class="type">int</span>);</span><br><span class="line"><span class="keyword">CREATE TABLE</span> t2(v3 <span class="type">int</span>, v4 <span class="type">int</span>);</span><br><span class="line"><span class="keyword">CREATE</span> INDEX t2v3 <span class="keyword">on</span> t2(v3);</span><br><span class="line">EXPLAIN <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> t1 <span class="keyword">INNER</span> <span class="keyword">JOIN</span> t2 <span class="keyword">ON</span> v1 <span class="operator">=</span> v3;</span><br><span class="line"><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span> PLANNER <span class="operator">=</span><span class="operator">=</span><span class="operator">=</span></span><br><span class="line">Projection &#123; exprs<span class="operator">=</span>[#<span class="number">0.0</span>, #<span class="number">0.1</span>, #<span class="number">0.2</span>, #<span class="number">0.3</span>] &#125; <span class="operator">|</span> (t1.v1:<span class="type">INTEGER</span>, t1.v2:<span class="type">INTEGER</span>, t2.v3:<span class="type">INTEGER</span>, t2.v4:<span class="type">INTEGER</span>)</span><br><span class="line">  NestedLoopJoin &#123; predicate<span class="operator">=</span>#<span class="number">0.0</span><span class="operator">=</span>#<span class="number">1.0</span> &#125; <span class="operator">|</span> (t1.v1:<span class="type">INTEGER</span>, t1.v2:<span class="type">INTEGER</span>, t2.v3:<span class="type">INTEGER</span>, t2.v4:<span class="type">INTEGER</span>)</span><br><span class="line">    SeqScan &#123; <span class="keyword">table</span><span class="operator">=</span>t1 &#125; <span class="operator">|</span> (t1.v1:<span class="type">INTEGER</span>, t1.v2:<span class="type">INTEGER</span>)</span><br><span class="line">    SeqScan &#123; <span class="keyword">table</span><span class="operator">=</span>t2 &#125; <span class="operator">|</span> (t2.v3:<span class="type">INTEGER</span>, t2.v4:<span class="type">INTEGER</span>)</span><br><span class="line"><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span> OPTIMIZER <span class="operator">=</span><span class="operator">=</span><span class="operator">=</span></span><br><span class="line">NestedIndexJoin &#123; type<span class="operator">=</span><span class="keyword">Inner</span>, key_predicate<span class="operator">=</span>#<span class="number">0.0</span>, index<span class="operator">=</span>t2v3, index_table<span class="operator">=</span>t2 &#125; <span class="operator">|</span> (t1.v1:<span class="type">INTEGER</span>, t1.v2:<span class="type">INTEGER</span>, t2.v3:<span class="type">INTEGER</span>, t2.v4:<span class="type">INTEGER</span>)</span><br><span class="line">  SeqScan &#123; <span class="keyword">table</span><span class="operator">=</span>t1 &#125; <span class="operator">|</span> (t1.v1:<span class="type">INTEGER</span>, t1.v2:<span class="type">INTEGER</span>)</span><br></pre></td></tr></table></figure>
+
+<p>等值连接能使用索引连接执行器的必要条件是我的连接谓词表示的键是存在的，不过这一点优化器已经帮我们保证了。</p>
+<p>实现方法和嵌套循环很像，只不过把对外表遍历改成了用索引快速查找外表的元组。</p>
+<h3 id="哈希连接（HashJoin）"><a href="#哈希连接（HashJoin）" class="headerlink" title="哈希连接（HashJoin）"></a>哈希连接（HashJoin）</h3><p>不是，Task2 这么轻松，这 Task3 给我干哪来了？怎么哈希表也要我自己实现啊，待遇真没 Task2 好啊。</p>
+<h4 id="内存哈希连接"><a href="#内存哈希连接" class="headerlink" title="内存哈希连接"></a>内存哈希连接</h4><p>哈希连接最简单的方式是内存哈希连接，我们可以将外表所有的元组放入<br><code>unordered_map</code> 中，然后遍历内表的元组，使用哈希表直接定位连接对象。</p>
+<ul>
+<li>优点：常数很小，逻辑简单</li>
+<li>缺点：有一个先决条件是外表所有元素需要被内存存下</li>
+</ul>
+<p>执行器在数据库系统中是高度并发的，如果每个执行器都会占用很大的内存，会影响并发效率</p>
+<h4 id="分组哈希连接（GraceHash）"><a href="#分组哈希连接（GraceHash）" class="headerlink" title="分组哈希连接（GraceHash）"></a>分组哈希连接（GraceHash）</h4><p>利用分治思想，将两个表的任务再度细分，每个组中的左右元组单独匹配。<br>分组哈希的一共有两个阶段：</p>
+<ol>
+<li>获取所有元组并分组写入磁盘</li>
+<li>在磁盘中依次获取每个组中的所有元组并依次进行内存哈希连接</li>
+</ol>
+<p>这里的我们先默认分组后每个组中的元组是不会超过内存限制的。</p>
+<ul>
+<li><p>分组过程（Init中进行）</p>
+<p>  首先我们可以设置 <code>k</code> 个分组，使用 <code>bpm</code> 创建 <code>k</code> 个新的页面。</p>
+<p>  对于每个表中的每个元组可以利用谓词和哈希函数获取哈希值，将这个哈希值对 <code>k</code> 取模后的结果定义为这个元组所在的组别。并将其写入这个组别所在的页面。</p>
+</li>
+<li><p>连接过程（Next中执行）</p>
+<p>  使用 <code>bpm</code> 获取对应组别的所有左右元组，将这些外表的元组加入哈希表，然后遍历内表元组，通过哈希表查询连接。</p>
+</li>
+</ul>
+<h4 id="重要的数据结构设计"><a href="#重要的数据结构设计" class="headerlink" title="重要的数据结构设计"></a>重要的数据结构设计</h4><ol>
+<li><p><code>IntermediateResultPage</code></p>
+<p> 我们需要将每个组的元组存在一个单独的内存页上，这个类就用于存放临时写入的元组。</p>
+<p> 但是这个类官方什么成员都没给，完全需要从头开始实现，但是可以参照 <code>TablePage</code> 的实现。</p>
+<p> 页面布局（从低地址到高地址）:</p>
+ <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+---------------+------------+----------------------+-----------------+</span><br><span class="line">| Header (元数据)| Free Space| TupleInfos （从头往后）|Tuples (从后往前)|</span><br><span class="line">+---------------+----------- +----------------------+-----------------+</span><br></pre></td></tr></table></figure>
+
+<p> <code>TupleInfo</code> 存储对应元组的偏移量和长度。</p>
+<p> 其中 <code>Header</code>, <code>Free Space</code>, <code>TupleInfo</code> 的长度都是固定为 8 个字节，而 Tuple 的长度是不固定的。</p>
+<p> 这个类目前最核心的方法就是插入元组，获取特定位置的元组。</p>
+<p> 这需要我们理解 <code>Bustub</code> 数据的存储的机制。</p>
+<p> <strong>关键误区</strong></p>
+<p> 页面类并不直接在磁盘上操作，页面类也不会获取磁盘上的数据。页面类通过获取 <code>FrameHeader</code> 中的指针来进行对数据的访问。</p>
+<p> <strong>插入数据的全过程</strong></p>
+<ol>
+<li><p>首先利用 <code>bpm</code> 通过页面的 id 获取对应页面的 <code>PageGuard</code>，</p>
+</li>
+<li><p>然后再用 <code>PageGuard</code> 的 <code>AsMut</code> 方法，用不同类型解释这个的信息将其转换为特定种类的 <code>Page</code> 类实例，同时 <code>bpm</code> 中对应的 <code>frame</code> 被标记为脏页。</p>
+</li>
+<li><p>调用 <code>Page</code> 实例的 <code>InsertTuple</code> 方法。</p>
+</li>
+<li><p><code>InsertTuple</code> 方法中可以通过设计好的存储规则找到新插入的 tuple&#x2F;tupleinfo 的偏移量，然后使用 <code>memcpy</code> 将这些信息写入 <code>FrameHeader</code> 的存储信息的指针中。</p>
+</li>
+<li><p><code>PageGuard</code> 使用 <code>Flush</code> 方法将内容写回磁盘。</p>
+</li>
+</ol>
+<p> <strong>关键成员</strong><br> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">IntermediateResultPage</span> &#123;</span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">    <span class="type">char</span> page_start_[<span class="number">0</span>];  <span class="comment">// 照搬 TablePage！</span></span><br><span class="line">    </span><br><span class="line">    <span class="type">static</span> <span class="keyword">constexpr</span> <span class="type">size_t</span> HEADER_SIZE = <span class="number">8</span>;</span><br><span class="line">    <span class="type">static</span> <span class="keyword">constexpr</span> <span class="type">size_t</span> TUPLE_INFO_SIZE = <span class="number">8</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">TupleInfo</span> &#123;</span><br><span class="line">        <span class="type">uint32_t</span> offset_;</span><br><span class="line">        <span class="type">uint32_t</span> size_;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">uint32_t</span> &amp;<span class="title">NumTuples</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint32_t</span>*&gt;(page_start_);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">uint32_t</span> &amp;<span class="title">FreeSpaceOffset</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> *<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint32_t</span>*&gt;(page_start_ + <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function">TupleInfo &amp;<span class="title">GetTupleInfo</span><span class="params">(<span class="type">uint32_t</span> idx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> *<span class="built_in">reinterpret_cast</span>&lt;TupleInfo*&gt;(</span><br><span class="line">        page_start_ + HEADER_SIZE + idx * TUPLE_INFO_SIZE</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br> <strong>InsertTuple的具体实现</strong>：<br> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">auto</span> <span class="title">InsertTuple</span><span class="params">(<span class="type">const</span> Tuple &amp;tuple)</span> -&gt; <span class="type">bool</span> </span>&#123;</span><br><span class="line">    <span class="type">uint32_t</span> tuple_size = tuple.<span class="built_in">GetLength</span>();</span><br><span class="line">    <span class="type">uint32_t</span> num_tuples = <span class="built_in">GetNumTuples</span>();</span><br><span class="line">    <span class="type">uint32_t</span> current_free = <span class="built_in">FreeSpaceOffset</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 检查空间</span></span><br><span class="line">    <span class="type">uint32_t</span> required = HEADER_SIZE + (num_tuples + <span class="number">1</span>) * TUPLE_INFO_SIZE + tuple_size;</span><br><span class="line">    <span class="keyword">if</span> (current_free &lt; required) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 计算偏移量（从后往前）</span></span><br><span class="line">    <span class="type">uint32_t</span> new_offset = current_free - tuple_size;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 更新元数据</span></span><br><span class="line">    <span class="built_in">FreeSpaceOffset</span>() = new_offset;</span><br><span class="line">    TupleInfo &amp;info = <span class="built_in">GetTupleInfo</span>(num_tuples);</span><br><span class="line">    info.offset_ = new_offset;</span><br><span class="line">    info.size_ = tuple_size;</span><br><span class="line">    <span class="built_in">NumTuples</span>()++;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 复制数据：使用 GetData() 和 GetLength()，不能直接访问 data_</span></span><br><span class="line">    <span class="built_in">memcpy</span>(page_start_ + new_offset, tuple.<span class="built_in">GetData</span>(), tuple_size);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p>哈希表</p>
+<p> 官方提醒我们可以利用聚合执行器的哈希实现来实现我们的哈希表。</p>
+<p> 其实我设计的和聚合执行器的哈希表真的很像，唯一的不同在于我的哈希模式是这样的：</p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::unordered_map&lt;JoinKey, std::vector &lt;Tuple&gt;&gt; ht_&#123;&#125;;</span><br></pre></td></tr></table></figure>
+<p> 第二个键是 vector 方便插入。</p>
+</li>
+</ol>
+<h3 id="哈希连接优化器"><a href="#哈希连接优化器" class="headerlink" title="哈希连接优化器"></a>哈希连接优化器</h3><p>实现方式和 Task1 的索引查询优化器如出一辙，没有太多区别。</p>
+<h2 id="其他思考"><a href="#其他思考" class="headerlink" title="其他思考"></a>其他思考</h2><h3 id="关于GraceHash的一些其他优化："><a href="#关于GraceHash的一些其他优化：" class="headerlink" title="关于GraceHash的一些其他优化："></a>关于GraceHash的一些其他优化：</h3><p>其实分组不能完全解决内存无法存下的问题</p>
+<p><strong>问题1</strong> 哈希函数不均匀可能使得部分组别元组超限。</p>
+<p>这个问题可以递归使用不同的哈希函数再次分区，也就是递归分区。</p>
+<p><strong>问题2</strong> 有一些键密度很高，即使哈希函数足够优秀也无法均匀分配。</p>
+<p>在递归分区遇到热键的情况可以使用嵌套循环的方式暴力查找。</p>
+<p>不过这些问题并没有在 Task3 的测试样例中涉及</p>
+<h3 id="布隆过滤器（Bloom-Filter）"><a href="#布隆过滤器（Bloom-Filter）" class="headerlink" title="布隆过滤器（Bloom Filter）"></a>布隆过滤器（Bloom Filter）</h3><p>LeaderBoard 中有一个测试没法用内存存下，但是它没有任何匹配的连接，这个看官方课件的描述应该可以用布隆过滤器在 Init 过程中直接过滤一大批无法匹配的外表元组解决。具体以后再实现吧。</p>
+<h3 id="为什么有了索引连接还需要哈希连接？"><a href="#为什么有了索引连接还需要哈希连接？" class="headerlink" title="为什么有了索引连接还需要哈希连接？"></a>为什么有了索引连接还需要哈希连接？</h3><p>因为索引连接必须要我的系统有关于这些谓词的索引结构，如果没有的话就不可以使用索引连接。</p>
+<p>而哈希连接没有这个限制。</p>
+<h3 id="关于分组哈希的模数问题"><a href="#关于分组哈希的模数问题" class="headerlink" title="关于分组哈希的模数问题"></a>关于分组哈希的模数问题</h3><p>我第一次测试的时候卡在了一个大样例，一开始我很绝望，我以为这个 Task 要我们处理数据倾斜的问题，但是观察样例后发现它的数据分布是均匀的，所以我怀疑是哈希函数的问题。</p>
+<p>JoinKey 的哈希函数我直接套用了聚合哈希函数的写法，返回类型为 unsigned 类型，而我的模数也选了 2 的幂，这时候会非常容易出现哈希碰撞的问题，也很好理解，改成 255 就通过了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>代码量真的非常非常多啊。。。。</p>
+<p>开头几天我一直以为我们是要处理数据倾斜问题的，完全无从下手，搞清楚要求之后轻松很多。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/xdcccccccccccc">xdcccccccccccc</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xdcccccccccccc.github.io/2025/12/16/CMU-15-445-Lab3-Task2-Task3-%E9%80%9A%E5%85%B3%EF%BC%81.html">https://xdcccccccccccc.github.io/2025/12/16/CMU-15-445-Lab3-Task2-Task3-%E9%80%9A%E5%85%B3%EF%BC%81.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://xdcccccccccccc.github.io" target="_blank">xdccc的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/xdccc-blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><a class="post-meta__tags" href="/xdccc-blog/tags/C/">C++</a><a class="post-meta__tags" href="/xdccc-blog/tags/Bustub/">Bustub</a><a class="post-meta__tags" href="/xdccc-blog/tags/CMU-15445/">CMU-15445</a></div><div class="post-share"><div class="social-share" data-image="/xdccc-blog/img/%E5%A4%B4%E5%83%8F.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/xdccc-blog/2025/12/11/CMU-15-445-Lab3-Task1-%E9%80%9A%E5%85%B3%EF%BC%81.html" title="CMU 15-445 Lab3 Task1 通关！"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">CMU 15-445 Lab3 Task1 通关！</div></div><div class="info-2"><div class="info-item-1">CMU 15-445 Lab3 Task1 通关，实现基本执行器和 IndexScan 优化器📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab3 - Query Execution 任务：Task1 - Access Method Executors 耗时：2 天 状态：本地全测试通过 代码分支：lab3-Task1-Access-Method-Executor  前言Lab3 需要对 Bustub 大多数源代码有基本的认识，需要静下心来阅读源代码，理解项目框架，要阅读数十个类，开始几天真是一行代码都写不出来。 核心问题Lab1 实现缓冲池管理器，实现对磁盘的访问，Lab2 用 B+ 树实现索引结构，Lab3 需要把它们串联起来，我们需要开始对输入的 sql 语句进行响应了。 Task 1 的目标是实现数据库最底层的存储访问层执行器，让查询引擎能够真正地从存储系统读取和修改数据。 核心组件相比之前的 Lab 有点小多，不一一列举，供上官方给出了查询处理流程图：  整体架构从上到下分为 4 个层次: 查询处理层（Query Proces...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/xdccc-blog/2025/12/11/CMU-15-445-Lab3-Task1-%E9%80%9A%E5%85%B3%EF%BC%81.html" title="CMU 15-445 Lab3 Task1 通关！"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-11</div><div class="info-item-2">CMU 15-445 Lab3 Task1 通关！</div></div><div class="info-2"><div class="info-item-1">CMU 15-445 Lab3 Task1 通关，实现基本执行器和 IndexScan 优化器📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab3 - Query Execution 任务：Task1 - Access Method Executors 耗时：2 天 状态：本地全测试通过 代码分支：lab3-Task1-Access-Method-Executor  前言Lab3 需要对 Bustub 大多数源代码有基本的认识，需要静下心来阅读源代码，理解项目框架，要阅读数十个类，开始几天真是一行代码都写不出来。 核心问题Lab1 实现缓冲池管理器，实现对磁盘的访问，Lab2 用 B+ 树实现索引结构，Lab3 需要把它们串联起来，我们需要开始对输入的 sql 语句进行响应了。 Task 1 的目标是实现数据库最底层的存储访问层执行器，让查询引擎能够真正地从存储系统读取和修改数据。 核心组件相比之前的 Lab 有点小多，不一一列举，供上官方给出了查询处理流程图：  整体架构从上到下分为 4 个层次: 查询处理层（Query Proces...</div></div></div></a><a class="pagination-related" href="/xdccc-blog/2025/11/22/CMU-15-445-Lab1-Task1-%E9%80%9A%E5%85%B3%EF%BC%81.html" title="CMU 15-445 Lab1 Task1 通关！"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">CMU 15-445 Lab1 Task1 通关！</div></div><div class="info-2"><div class="info-item-1">CMU 15-445 Lab1 Task1 通关记：从0实现ARC替换算法📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab1 - Buffer Pool Manager 任务：Task1 - ARC页面替换算法实现 耗时：2天 状态：✅ 所有测试通过 代码分支：lab1_arc_replacer  背景退役Acmer，工程 0 基础，开始15445的学习还是需要一定适应时间的，而且在一开始我没有养成很好地处理问题的习惯，我应该先细致得搞清楚官网的所有实现要求好好规划一下数据结构和方法再开始。 写在前面全文统一使用”页面”(Page)和”帧”(Frame)的翻译。 核心问题本实验要解决的核心问题是在有限内存条件下管理远超内存容量的数据库数据。 数据库的持久化数据最终是存储在磁盘上的，磁盘的访问速度比内存要慢很多。 在Lab1中，我需要实现基于ARC算法的缓冲池管理器，构建一个透明的数据交换层，让上层组件无需关心数据实际存储在内存还是磁盘，从而简化数据库系统的整体架构。 🔍 ARC算法：我的理解算法核心思想ARC算法通过维护四个队列来智...</div></div></div></a><a class="pagination-related" href="/xdccc-blog/2025/11/28/CMU-15445-Lab1.html" title="CMU 15445 Lab1 彻底通关！"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-28</div><div class="info-item-2">CMU 15445 Lab1 彻底通关！</div></div><div class="info-2"><div class="info-item-1">CMU 15-445 Lab1 彻底通关，实现 Buffer Pool Manager 📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab1 - Buffer Pool Manager 任务：Task3 - Buffer Pool Manager 耗时：3天 状态：Gradescrop 全测试通过 代码分支：lab1-base  核心问题实现 Lab1 最重要的组件 bpm。 BufferPoolManager是连接内存和磁盘的核心组件，主要负责：从磁盘获取页面：通过 DiskScheduler将数据库页面从磁盘加载到内存中。将页面写回磁盘：在特定时机（如显式指令或页面驱逐时）将脏页通过 DiskScheduler写回磁盘。 核心结构   组件 作用    FrameHeader 管理内存中的帧，所有对页面数据的访问都应通过 FrameHeader进行。   ReadPageGuard RAII 模式的并发控制，提供线程安全的读访问   WritePageGuard RAII 模式的并发控制，提供线程安全的写访问   BufferPoo...</div></div></div></a><a class="pagination-related" href="/xdccc-blog/2025/12/07/CMU-15445-Lab2-%E5%BD%BB%E5%BA%95%E9%80%9A%E5%85%B3%EF%BC%81.html" title="CMU 15445 Lab2 彻底通关！"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-07</div><div class="info-item-2">CMU 15445 Lab2 彻底通关！</div></div><div class="info-2"><div class="info-item-1">CMU 15-445 Lab2 彻底通关，实现支持墓碑的并发 B+ 树 📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab2 - Concurrent B+ Tree with Tombstones 耗时：6 天 状态：GradeScrop 全测试通过 代码分支：lab2-base  前言由于整个 lab 都是在实现一个部件，Task 之间关联度极高，所以直接汇总成一篇文章了 核心问题索引是数据库系统中优化数据检索性能的核心数据结构，它就像书籍的目录一样，能够快速定位到所需数据的位置，而无需扫描整个表。 B+ 树是常见的实现数据库索引的数据结构。 Lab2 的核心是实现一个支持并发访问、带有墓碑机制的 B+ 树。B+ 树是数据库索引的核心数据结构，而墓碑（Tombstone）是实现延迟删除的关键技术 —— 删除操作不直接物理删除数据，而是插入一个墓碑标记，后续通过合并 &#x2F; 分裂操作清理，以此提升并发场景下的删除性能。 核心结构   组件 作用    BPlusTree B+ 树核心类，管理根节点、提供插入 &#x2F; 删除 ...</div></div></div></a><a class="pagination-related" href="/xdccc-blog/2025/11/24/CMU-15-445-Lab1-Task2-%E9%80%9A%E5%85%B3.html" title="CMU 15-445 Lab1 Task2 通关!"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-24</div><div class="info-item-2">CMU 15-445 Lab1 Task2 通关!</div></div><div class="info-2"><div class="info-item-1">CMU 15-445 Lab1 Task2 通关记：实现 DiskScheduler，用于异步调度磁盘 I&#x2F;O 操作📅 项目信息 课程：CMU 15-445 Database Systems   实验：Lab1 - Buffer Pool Manager 任务：Task2 - 异步调度磁盘 I&#x2F;O 操作 耗时：没花多久 状态：✅ 所有测试通过 代码分支：lab1_task2_diskscheduler  核心问题实现一个 DiskScheduler，用于 异步调度磁盘I&#x2F;O请求，使得 BufferPoolManager（Task3）可以 非阻塞地​ 发起磁盘读写操作。 核心组件   组件 作用    DiskRequest 表示一个磁盘请求（读&#x2F;写 + 数据缓冲区 + 回调Promise）   DiskScheduler 管理请求队列 + 后台工作线程   Channel 线程安全的队列（用于存放 DiskRequest）   DiskManager 实际执行磁盘I&#x2F;O的类   什么是异步I&#x2F;O?异步I&#x2F;O（...</div></div></div></a><a class="pagination-related" href="/xdccc-blog/2025/11/21/CMU-15445-Lab0.html" title="CMU-15445 lab0"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-21</div><div class="info-item-2">CMU-15445 lab0</div></div><div class="info-2"><div class="info-item-1">C++基础语法</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/xdccc-blog/img/%E5%A4%B4%E5%83%8F.png" onerror="this.onerror=null;this.src='/xdccc-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xdcccccccccccc</div><div class="author-info-description">欢迎来到我的技术博客</div><div class="site-data"><a href="/xdccc-blog/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/xdccc-blog/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/xdccc-blog/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xdcccccccccccc"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/xdcccccccccccc" target="_blank" title="fab fa-github"><i class="GitHub"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CMU-15-445-Lab3-Task2-Task3-%E9%80%9A%E5%85%B3%EF%BC%8C%E5%AE%9E%E7%8E%B0%E5%9F%BA%E6%9C%AC%E6%89%A7%E8%A1%8C%E5%99%A8%E5%92%8C-IndexScan-%E4%BC%98%E5%8C%96%E5%99%A8"><span class="toc-number">1.</span> <span class="toc-text">CMU 15-445 Lab3 Task2&amp;Task3 通关，实现基本执行器和 IndexScan 优化器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%85-%E9%A1%B9%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.</span> <span class="toc-text">📅 项目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.2.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.3.</span> <span class="toc-text">核心任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="toc-number">1.4.</span> <span class="toc-text">实现过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E6%89%A7%E8%A1%8C%E5%99%A8%EF%BC%88Aggregation%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">聚合执行器（Aggregation）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B5%8C%E5%A5%97%E5%BE%AA%E7%8E%AF%E8%BF%9E%E6%8E%A5%EF%BC%88NestedLoopJoin%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">嵌套循环连接（NestedLoopJoin）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B5%8C%E5%A5%97%E7%B4%A2%E5%BC%95%E8%BF%9E%E6%8E%A5%EF%BC%88NestedIndexJoin%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">嵌套索引连接（NestedIndexJoin）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E8%BF%9E%E6%8E%A5%EF%BC%88HashJoin%EF%BC%89"><span class="toc-number">1.4.4.</span> <span class="toc-text">哈希连接（HashJoin）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%93%88%E5%B8%8C%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.4.4.1.</span> <span class="toc-text">内存哈希连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E5%93%88%E5%B8%8C%E8%BF%9E%E6%8E%A5%EF%BC%88GraceHash%EF%BC%89"><span class="toc-number">1.4.4.2.</span> <span class="toc-text">分组哈希连接（GraceHash）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.4.3.</span> <span class="toc-text">重要的数据结构设计</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E8%BF%9E%E6%8E%A5%E4%BC%98%E5%8C%96%E5%99%A8"><span class="toc-number">1.4.5.</span> <span class="toc-text">哈希连接优化器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%80%9D%E8%80%83"><span class="toc-number">1.5.</span> <span class="toc-text">其他思考</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EGraceHash%E7%9A%84%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="toc-number">1.5.1.</span> <span class="toc-text">关于GraceHash的一些其他优化：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%88Bloom-Filter%EF%BC%89"><span class="toc-number">1.5.2.</span> <span class="toc-text">布隆过滤器（Bloom Filter）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E4%BA%86%E7%B4%A2%E5%BC%95%E8%BF%9E%E6%8E%A5%E8%BF%98%E9%9C%80%E8%A6%81%E5%93%88%E5%B8%8C%E8%BF%9E%E6%8E%A5%EF%BC%9F"><span class="toc-number">1.5.3.</span> <span class="toc-text">为什么有了索引连接还需要哈希连接？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%88%86%E7%BB%84%E5%93%88%E5%B8%8C%E7%9A%84%E6%A8%A1%E6%95%B0%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.4.</span> <span class="toc-text">关于分组哈希的模数问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/xdccc-blog/2025/12/16/CMU-15-445-Lab3-Task2-Task3-%E9%80%9A%E5%85%B3%EF%BC%81.html" title="CMU 15-445 Lab3 Task2&amp;Task3 通关！">CMU 15-445 Lab3 Task2&amp;Task3 通关！</a><time datetime="2025-12-16T10:02:39.000Z" title="发表于 2025-12-16 18:02:39">2025-12-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/xdccc-blog/2025/12/11/CMU-15-445-Lab3-Task1-%E9%80%9A%E5%85%B3%EF%BC%81.html" title="CMU 15-445 Lab3 Task1 通关！">CMU 15-445 Lab3 Task1 通关！</a><time datetime="2025-12-11T11:54:50.000Z" title="发表于 2025-12-11 19:54:50">2025-12-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/xdccc-blog/2025/12/07/CMU-15445-Lab2-%E5%BD%BB%E5%BA%95%E9%80%9A%E5%85%B3%EF%BC%81.html" title="CMU 15445 Lab2 彻底通关！">CMU 15445 Lab2 彻底通关！</a><time datetime="2025-12-07T13:01:51.000Z" title="发表于 2025-12-07 21:01:51">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/xdccc-blog/2025/11/28/CMU-15445-Lab1.html" title="CMU 15445 Lab1 彻底通关！">CMU 15445 Lab1 彻底通关！</a><time datetime="2025-11-28T12:45:08.000Z" title="发表于 2025-11-28 20:45:08">2025-11-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/xdccc-blog/2025/11/24/CMU-15-445-Lab1-Task2-%E9%80%9A%E5%85%B3.html" title="CMU 15-445 Lab1 Task2 通关!">CMU 15-445 Lab1 Task2 通关!</a><time datetime="2025-11-24T12:41:44.000Z" title="发表于 2025-11-24 20:41:44">2025-11-24</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By xdcccccccccccc</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/xdccc-blog/js/utils.js?v=5.5.2"></script><script src="/xdccc-blog/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/xdccc-blog/"></script></div></body></html>
